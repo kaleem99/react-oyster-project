@@ -23,3 +23,36 @@
   margin-block-start: 5px;
   margin-block-end: 5px;
 }
+.saveButton{
+  font-size: 40px;
+  margin: 20px auto;
+  width: auto;
+  right: 50%;
+  float: left;
+  height: 60px;
+  background: rgb(47, 47, 47);
+  border: 1px solid white;
+  color: white;
+  cursor: pointer;
+
+}
+
+.addButton{
+  font-size: 40px;
+  margin: 20px auto;
+  width: 60px;
+  right: 50px;
+  float: right;
+  background: rgb(47, 47, 47);
+  border: 1px solid white;
+  color: white;
+  height: 60px;
+  cursor: pointer;
+}
+.addButton:hover, .saveButton:hover{
+  background-color: black;
+}
+
+button{
+  cursor: pointer;
+}

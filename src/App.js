@@ -4,8 +4,9 @@ import "./App.css";
 import WistiaEmbed from "./Components/IframeEmbed";
 import WistiaVideo from "./Components/WistiaEmbed";
 import convertTime from "./Helpers/convertTime";
-
+import { MdClose } from "react-icons/md";
 // import wistia from "wistia";
+
 function App() {
   const [logsfile, setLogsFile] = useState([]);
   const [videoTime, setVideoTime] = useState("00:00");
@@ -19,7 +20,7 @@ function App() {
         "Content-Type": "application/json", // Set the content type to JSON
       },
     })
-      .then((response) => response.json())
+      .then((response) => response.json()) 
       .then((data) => {
         setLogsFile(data);
         const result = data[wistiaVideId.slice(1)] || [];
@@ -34,6 +35,11 @@ function App() {
   const addVideoTimeStampAndSlide = () => {
     const newArr = [...slidesState];
     newArr.push({ time: videoTime, Link: "" });
+    setSlidesState(newArr);
+  };
+  const  removeVideoTimeStampAndSlide = (index) => {
+    const newArr = [...slidesState].filter((item, i) => i !== index);
+    // newArr.push({ time: videoTime, Link: "" });
     setSlidesState(newArr);
   };
   const fetchPostMethod = () => {
@@ -165,8 +171,9 @@ function App() {
                         position: "absolute",
                         right: "10%",
                       }}
+                      onClick={()=> removeVideoTimeStampAndSlide(i)}
                     >
-                      X
+                      <MdClose/>
                     </div>
                     <h2 className="DurationAndTime">Time: {item.time}</h2>
                     <label>Document Link</label>
@@ -194,34 +201,13 @@ function App() {
             >
               <button
                 onClick={() => fetchPostMethod()}
-                style={{
-                  fontSize: "40px",
-                  margin: "20px auto",
-                  width: "auto",
-                  right: "50%",
-                  float: "left",
-                  height: "60px",
-
-                  background: "rgb(47, 47, 47)",
-                  border: "1px solid white",
-                  color: "white",
-                }}
+               className="saveButton"
               >
                 Save
               </button>
               <button
                 onClick={() => addVideoTimeStampAndSlide()}
-                style={{
-                  fontSize: "40px",
-                  margin: "20px auto",
-                  width: "60px",
-                  right: "50px",
-                  float: "right",
-                  background: "rgb(47, 47, 47)",
-                  border: "1px solid white",
-                  color: "white",
-                  height: "60px",
-                }}
+               className="addButton"
               >
                 +
               </button>

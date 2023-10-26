@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Helmet from "react-helmet";
 import convertTime from "../Helpers/convertTime";
 import iframeContent from "../Helpers/IframeContent";
+import { MdFullscreen, MdContentCopy, MdFullscreenExit } from "react-icons/md";
+
 const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
+  const [isExpaned, setIsExpaned] = useState(false)
   useEffect(() => {
     const WistiaURL = wistiaId; // Replace with your actual Wistia URL
     const WistiaHeaders = {
@@ -16,11 +19,6 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
       method: "get",
     };
 
-    const objContent = {
-      heading: "Bureaucratic Theory (Contd)",
-      list: ["People hired on the basis of competence"],
-    };
-
     fetch(
       `https://api.wistia.com/v1/medias/${WistiaURL}/captions.json`,
       options
@@ -30,7 +28,7 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
         // Handle the response data here
         document.getElementById("Transcript").innerHTML = "";
         const captionBlocks = data[0].text.split("\n\n");
-
+        console.log(data)
         captionBlocks.forEach((block, index) => {
           const lines = block.split("\n");
           const timestamp = lines[1];
@@ -196,7 +194,7 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
               width: "80%",
               height: "300px",
               backgroundColor: "#2f2f2f",
-              margin: "20px auto",
+              margin: "10px auto",
               padding: "5px",
             }}
           >
@@ -219,11 +217,12 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
             ></div>
           </div>
           <div
+          id="IframeContent"
             style={{
               width: "80%",
-              height: "200px",
+              height: "100px",
               backgroundColor: "#2f2f2f",
-              margin: "20px auto",
+              margin: "10px auto",
               padding: "5px",
             }}
           >
@@ -233,24 +232,66 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
             <button
               onClick={() => {
                 const result = document.getElementById("Iframe").innerHTML;
-                navigator.clipboard.writeText(result);
+                navigator.clipboard.writeText(result.replace(/&lt;/ig, "<").replace(/&gt;/ig, ">"));
+              }}
+              style={{
+                width: "100px",
+                height: "30px",
+                float: "left",
+                marginTop: "-25px",
+              }}
+            >
+             <MdContentCopy/>
+            </button>
+            <button
+              onClick={() => {
+                setIsExpaned(!isExpaned)
+               const IframeContent = document.getElementById("IframeContent")
+               const Iframe = document.getElementById("Iframe");
+
+                if(!isExpaned){
+                  IframeContent.style.position = "absolute"
+                  IframeContent.style.width = "40%"
+                  IframeContent.style.height = "400px"
+                  IframeContent.style.left = "0%"
+                  IframeContent.style.bottom = "0%"
+                  IframeContent.style.top = "0%"
+                  IframeContent.style.right = "0%"
+                  IframeContent.style.margin = "auto"
+                  IframeContent.style.border = "3px solid gray"
+
+                  // Iframe.style.width = "80%"
+                  Iframe.style.height = "300px"
+
+                }
+                else{
+                  IframeContent.style.position = "static"
+                  IframeContent.style.width = "80%"
+                  IframeContent.style.height = "100px"
+                  // Iframe.style.width = "80%"
+                  Iframe.style.height = "30px"
+                  IframeContent.style.border = "none"
+
+                }
+
               }}
               style={{
                 width: "100px",
                 height: "30px",
                 float: "right",
-                marginTop: "0px",
+                marginTop: "-25px",
+                fontSize: "larger"
               }}
             >
-              Copy Content
+              {!isExpaned ? <MdFullscreen/> : <MdFullscreenExit/>}
             </button>
             <hr />
             <div
               id="Iframe"
               style={{
-                width: "80%",
+                width: "90%",
                 margin: "auto",
-                height: "100px",
+                height: "30px",
                 overflow: "auto",
                 padding: "10px",
                 backgroundColor: "#2f2f2f",
@@ -260,10 +301,7 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
 
               //   contentEditable="true"
             >
-              {iframeContent(wistiaId.slice(1), {
-                heading: "Bureacratic Theory (Contd)",
-                list: ["People hired on the basis of competence"],
-              })}
+              {iframeContent(wistiaId.slice(1), logsFile[wistiaId.slice(1)])}
             </div>
           </div>
         </div>
