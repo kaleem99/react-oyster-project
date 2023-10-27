@@ -13,7 +13,6 @@ const iframeContent = (wistiaId, objContent) => {
     arr = objContent.map((item) => JSON.stringify(item)).join(" --> ")
     console.log(arr)
   }
-  console.log(arr, "arr")
 
   return `<div style="width: 100%; height: 100%; background-color: #212021">
   <div style="width: 100%; height: 80px; background-color: #2f2f2f"></div>
@@ -150,11 +149,11 @@ const iframeContent = (wistiaId, objContent) => {
     .then((response) => response.json())
     .then((data) => {
       document.getElementById("Transcript").innerHTML = "";
-      const captionBlocks = data[0].text.split("\n\n");
+      const captionBlocks = data[0].text.split("\\n\\n");
 
    
       captionBlocks.forEach((block, index) => {
-        const lines = block.split("\n");
+        const lines = block.split("\\n");
 
         const timestamp = lines[1];
     
