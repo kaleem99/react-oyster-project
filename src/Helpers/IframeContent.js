@@ -6,12 +6,9 @@ function timeStringToSeconds(timeString) {
 
 
 const iframeContent = (wistiaId, objContent) => {
-  console.log(objContent, "100") 
   let arr = ""
   if(objContent){
-    console.log(objContent, "Logs file")
     arr = objContent.map((item) => JSON.stringify(item)).join(" --> ")
-    console.log(arr)
   }
 
   return `<div style="width: 100%; height: 100%; background-color: #212021">

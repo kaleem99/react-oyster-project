@@ -6,7 +6,7 @@ import WistiaVideo from "./Components/WistiaEmbed";
 import convertTime from "./Helpers/convertTime";
 import { MdClose } from "react-icons/md";
 // import wistia from "wistia";
-
+const API_ROUTE = process.env.REACT_APP_API_ROUTES;
 function App() {
   const [logsfile, setLogsFile] = useState([]);
   const [videoTime, setVideoTime] = useState("00:00");
@@ -15,7 +15,7 @@ function App() {
   const wistiaVideId = window.location.pathname;
 
   useEffect(() => {
-    fetch("/logs", {
+    fetch(`${API_ROUTE}/logs`, {
       headers: {
         "Content-Type": "application/json", // Set the content type to JSON
       },
@@ -28,7 +28,6 @@ function App() {
       })
       .catch((error) => console.error("Error:", error));
 
-    console.log("Logs", 10);
   }, []);
 
   const videoPlayer = useRef(null);
@@ -43,13 +42,11 @@ function App() {
     setSlidesState(newArr);
   };
   const fetchPostMethod = () => {
-    console.log(logsfile[wistiaVideId.slice(1)]);
     let newLogsFile = { ...logsfile };
     // if (logsfile[wistiaVideId.slice(1)] == undefined) {
     newLogsFile[wistiaVideId.slice(1)] = slidesState;
     // }
-    console.log(newLogsFile);
-    fetch("/WriteLogsFile", {
+    fetch(`${API_ROUTE}/WriteLogsFile`, {
       method: "post",
       body: JSON.stringify(newLogsFile),
       headers: {
@@ -72,7 +69,6 @@ function App() {
       console.log("onHasData");
     },
     onReady: function (video) {
-      console.log(video.duration(), "playing");
       setDuration(convertTime(video.duration()));
 
       // setTime(video.time());
@@ -170,6 +166,7 @@ function App() {
                         fontSize: "25px",
                         position: "absolute",
                         right: "10%",
+                        cursor: "pointer"
                       }}
                       onClick={()=> removeVideoTimeStampAndSlide(i)}
                     >
