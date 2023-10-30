@@ -5,9 +5,10 @@ import iframeContent from "../Helpers/IframeContent";
 import { MdFullscreen, MdContentCopy, MdFullscreenExit } from "react-icons/md";
 
 const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
-  const [isExpaned, setIsExpaned] = useState(false)
+  const [isExpaned, setIsExpaned] = useState(false);
+  const [body, setBody] = useState("");
+  console.log(wistiaId);
   useEffect(() => {
-    const WistiaURL = wistiaId; // Replace with your actual Wistia URL
     const WistiaHeaders = {
       Authorization: "Bearer YOUR_API_KEY",
     };
@@ -19,16 +20,13 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
       method: "get",
     };
 
-    fetch(
-      `https://api.wistia.com/v1/medias/${WistiaURL}/captions.json`,
-      options
-    )
+    fetch(`https://api.wistia.com/v1/medias/${wistiaId}/captions.json`, options)
       .then((response) => response.json())
       .then((data) => {
         // Handle the response data here
         document.getElementById("Transcript").innerHTML = "";
         const captionBlocks = data[0].text.split("\n\n");
-        console.log(data)
+        console.log(data, 31);
         captionBlocks.forEach((block, index) => {
           const lines = block.split("\n");
           const timestamp = lines[1];
@@ -43,6 +41,56 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
           pElement.style.lineHeight = "28px";
           pElement.innerHTML = spokenText;
           document.getElementById("Transcript").appendChild(pElement);
+          setBody(
+            <div
+              className="wistia_responsive_wrapper"
+              style={{
+                height: "100%",
+                left: 0,
+                position: "absolute",
+                top: 0,
+                width: "100%",
+              }}
+            >
+              <div
+                className={`wistia_embed wistia_async_${wistiaId}`}
+                style={{
+                  height: "100%",
+                  position: "relative",
+                  width: "100%",
+                }}
+              >
+                <div
+                  className="wistia_swatch"
+                  style={{
+                    height: "100%",
+                    left: 0,
+                    opacity: 0,
+                    overflow: "hidden",
+                    position: "absolute",
+                    top: 0,
+                    transition: "opacity 200ms",
+                    width: "100%",
+                  }}
+                >
+                  <img
+                    src={
+                      `https://fast.wistia.com/embed/medias/${wistiaId}/swatch`
+                    }
+                    style={{
+                      filter: "blur(5px)",
+                      height: "100%",
+                      objectFit: "contain",
+                      width: "100%",
+                    }}
+                    alt=""
+                    aria-hidden="true"
+                    onLoad={(e) => (e.target.parentNode.style.opacity = 1)}
+                  />
+                </div>
+              </div>
+            </div>
+          );
         });
       })
       .catch((error) => {
@@ -107,7 +155,8 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
         });
       },
     });
-  }, []);
+  }, [wistiaId]);
+  const wistiaScriptURL = `https://fast.wistia.com/embed/medias/${wistiaId}.json`;
 
   return (
     <div style={{ width: "50%", height: "100%", backgroundColor: "#212021" }}>
@@ -132,62 +181,13 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
                 src="https://fast.wistia.com/assets/external/E-v1.js"
                 async
               ></script>
-              <script
-                src={`https://fast.wistia.com/embed/medias/roc17q5zlb.json`}
-                async
-              ></script>
+              <script src={wistiaScriptURL} async></script>
             </Helmet>
             <div
+              id="WistiaVideo"
               className="wistia_responsive_padding"
               style={{ padding: "56.25% 0 0 0", position: "relative" }}
-            >
-              <div
-                className="wistia_responsive_wrapper"
-                style={{
-                  height: "100%",
-                  left: 0,
-                  position: "absolute",
-                  top: 0,
-                  width: "100%",
-                }}
-              >
-                <div
-                  className={`wistia_embed wistia_async_${wistiaId}`}
-                  style={{
-                    height: "100%",
-                    position: "relative",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    className="wistia_swatch"
-                    style={{
-                      height: "100%",
-                      left: 0,
-                      opacity: 0,
-                      overflow: "hidden",
-                      position: "absolute",
-                      top: 0,
-                      transition: "opacity 200ms",
-                      width: "100%",
-                    }}
-                  >
-                    <img
-                      src={`https://fast.wistia.com/embed/medias/${wistiaId}/swatch`}
-                      style={{
-                        filter: "blur(5px)",
-                        height: "100%",
-                        objectFit: "contain",
-                        width: "100%",
-                      }}
-                      alt=""
-                      aria-hidden="true"
-                      onLoad={(e) => (e.target.parentNode.style.opacity = 1)}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+            >{body}</div>
           </div>
           <div
             style={{
@@ -217,7 +217,7 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
             ></div>
           </div>
           <div
-          id="IframeContent"
+            id="IframeContent"
             style={{
               width: "80%",
               height: "100px",
@@ -232,7 +232,9 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
             <button
               onClick={() => {
                 const result = document.getElementById("Iframe").innerHTML;
-                navigator.clipboard.writeText(result.replace(/&lt;/ig, "<").replace(/&gt;/ig, ">"));
+                navigator.clipboard.writeText(
+                  result.replace(/&lt;/gi, "<").replace(/&gt;/gi, ">")
+                );
               }}
               style={{
                 width: "100px",
@@ -241,49 +243,45 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
                 marginTop: "-25px",
               }}
             >
-             <MdContentCopy/>
+              <MdContentCopy />
             </button>
             <button
               onClick={() => {
-                setIsExpaned(!isExpaned)
-               const IframeContent = document.getElementById("IframeContent")
-               const Iframe = document.getElementById("Iframe");
+                setIsExpaned(!isExpaned);
+                const IframeContent = document.getElementById("IframeContent");
+                const Iframe = document.getElementById("Iframe");
 
-                if(!isExpaned){
-                  IframeContent.style.position = "absolute"
-                  IframeContent.style.width = "40%"
-                  IframeContent.style.height = "400px"
-                  IframeContent.style.left = "0%"
-                  IframeContent.style.bottom = "0%"
-                  IframeContent.style.top = "0%"
-                  IframeContent.style.right = "0%"
-                  IframeContent.style.margin = "auto"
-                  IframeContent.style.border = "3px solid gray"
+                if (!isExpaned) {
+                  IframeContent.style.position = "absolute";
+                  IframeContent.style.width = "40%";
+                  IframeContent.style.height = "400px";
+                  IframeContent.style.left = "0%";
+                  IframeContent.style.bottom = "0%";
+                  IframeContent.style.top = "0%";
+                  IframeContent.style.right = "0%";
+                  IframeContent.style.margin = "auto";
+                  IframeContent.style.border = "3px solid gray";
 
                   // Iframe.style.width = "80%"
-                  Iframe.style.height = "300px"
-
-                }
-                else{
-                  IframeContent.style.position = "static"
-                  IframeContent.style.width = "80%"
-                  IframeContent.style.height = "100px"
+                  Iframe.style.height = "300px";
+                } else {
+                  IframeContent.style.position = "static";
+                  IframeContent.style.width = "80%";
+                  IframeContent.style.height = "100px";
                   // Iframe.style.width = "80%"
-                  Iframe.style.height = "30px"
-                  IframeContent.style.border = "none"
-
+                  Iframe.style.height = "30px";
+                  IframeContent.style.border = "none";
                 }
-
               }}
               style={{
                 width: "100px",
                 height: "30px",
                 float: "right",
                 marginTop: "-25px",
-                fontSize: "larger"
+                fontSize: "larger",
               }}
             >
-              {!isExpaned ? <MdFullscreen/> : <MdFullscreenExit/>}
+              {!isExpaned ? <MdFullscreen /> : <MdFullscreenExit />}
             </button>
             <hr />
             <div
@@ -301,7 +299,7 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
 
               //   contentEditable="true"
             >
-              {iframeContent(wistiaId.slice(1), logsFile[wistiaId.slice(1)])}
+              {iframeContent(wistiaId, logsFile[wistiaId])}
             </div>
           </div>
         </div>

@@ -12,11 +12,11 @@ const iframeContent = (wistiaId, objContent) => {
   }
 
   return `<div style="width: 100%; height: 100%; background-color: #212021">
-  <div style="width: 100%; height: 80px; background-color: #2f2f2f"></div>
+  <div style="width: 100%; height: 20px; background-color: #2f2f2f"></div>
   <div
     style="
       width: 100%;
-      height: calc(100% - 80px);
+      height: calc(100% - 20px);
       display: grid;
       grid-template-columns: 50% auto;
     "
@@ -222,7 +222,8 @@ const iframeContent = (wistiaId, objContent) => {
         return totalSeconds;
       }
       function getUrlLink(str) {
-        return '<embed width="100%" height="500" src="' + str + '"></embed>';
+        '<embed width="100%" height="500" src="' + str + '"></embed>';
+        return <h1>str</h1>
       }
       video.bind("timechange", function () {
         let element = document.getElementById("Transcript");
@@ -242,13 +243,15 @@ const iframeContent = (wistiaId, objContent) => {
           }
         }
         const arr = arrOfData.split(" --> ");
-          const obj = (JSON.parse(arr[indexValue]));
+         for(let i = 0; i < arr.length; i++){
+          const obj = (JSON.parse(arr[i]));
           const time = timeStringToSeconds(obj.time);
-           const urlLink = obj.Link;
-           if (parseInt(video.time()) === time) {
+          const urlLink = obj.Link;
+          if (parseInt(video.time()) === time) {
             document.getElementById("content").innerHTML = getUrlLink(urlLink);
-            indexValue++;
+            // indexValue++;
           }
+         }
       });
     },
   });
