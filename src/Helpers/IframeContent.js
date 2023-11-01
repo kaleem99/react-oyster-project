@@ -4,11 +4,10 @@ function timeStringToSeconds(timeString) {
   return totalSeconds;
 }
 
-
 const iframeContent = (wistiaId, objContent) => {
-  let arr = ""
-  if(objContent){
-    arr = objContent.map((item) => JSON.stringify(item)).join(" --> ")
+  let arr = "";
+  if (objContent) {
+    arr = objContent.map((item) => JSON.stringify(item)).join(" --> ");
   }
 
   return `<div style="width: 100%; height: 100%; background-color: #212021">
@@ -32,7 +31,7 @@ const iframeContent = (wistiaId, objContent) => {
         class="iframe-wrapper"
       >
         <script
-          src="https://fast.wistia.com/embed/medias/roc17q5zlb.jsonp"
+          src="https://fast.wistia.com/embed/medias/${wistiaId}.jsonp"
           async
         ></script>
         <script
@@ -54,7 +53,7 @@ const iframeContent = (wistiaId, objContent) => {
             "
           >
             <div
-              class="wistia_embed wistia_async_roc17q5zlb seo=false videoFoam=true"
+              class="wistia_embed wistia_async_${wistiaId} seo=false videoFoam=true"
               style="height: 100%; position: relative; width: 100%"
             >
               <div
@@ -71,7 +70,7 @@ const iframeContent = (wistiaId, objContent) => {
                 "
               >
                 <img
-                  src="https://fast.wistia.com/embed/medias/roc17q5zlb/swatch"
+                  src="https://fast.wistia.com/embed/medias/${wistiaId}/swatch"
                   style="
                     filter: blur(5px);
                     height: 100%;
@@ -96,7 +95,40 @@ const iframeContent = (wistiaId, objContent) => {
           padding: 5px;
         "
       >
-        <h2 style="width: 80%; margin: auto; color: white">Transcript</h2>
+        <div
+          style="
+            width: 98%;
+            margin: auto;
+            height: 40px;
+            padding-top: 5px;
+            color: white;
+          "
+        >
+          <h2 style="width: 30%; margin: auto; color: white; float: left">
+            Transcript
+          </h2>
+          <div style="float: right; width: auto; display: flex">
+            <label>search captions</label>
+            <input
+              onchange="filterTranscript(this.value)"
+              style="width: 200px; height: 30px"
+            />
+            <div style="width: auto; display: flex">
+              <button onclick="nextAndPrevSearch('Previous')">prev</button>
+              <text
+                id="searchNumOfNum"
+                style="
+                  min-width: 40px;
+                  max-width: auto;
+                  text-align: center;
+                  font-size: larger;
+                "
+                >0</text
+              >
+              <button onclick="nextAndPrevSearch('Next')">next</button>
+            </div>
+          </div>
+        </div>
         <hr />
         <div
           id="Transcript"
@@ -113,23 +145,65 @@ const iframeContent = (wistiaId, objContent) => {
       </div>
     </div>
     <div style="height: 100%; width: 100%">
-      <div
-        style="
-          width: 90%;
-          height: 96%;
-          background-color: white;
-          margin: 2% auto;
-          /* padding: 20px; */
-        "
-      >
-        <div style="width: 90%; height: 80%; padding: 20px; margin: auto" id="content"></div>
+        <div
+          style="
+            width: 90%;
+            height: 96%;
+            background-color: white;
+            margin: 2% auto; /* padding: 20px; */
+          "
+        >
+          <div style="width: 100%; height: 50px">
+            <button
+              onclick="downloadHTMLasPDF('Transcript', 'captions')"
+              style="
+                height: 40px;
+                float: left;
+                margin-top: 20px;
+                margin-left: 20px;
+                background-color: #212021;
+                border: none;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+              "
+            >
+              Download captions
+            </button>
+            <button
+              onclick="downloadHTMLasPDF('content', 'notes')"
+              style="
+                height: 40px;
+                float: right;
+                margin-top: 20px;
+                margin-right: 20px;
+                background-color: #212021;
+                border: none;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+              "
+            >
+              Download Notes
+            </button>
+          </div>
+          <div
+            style="width: 90%; height: 80%; padding: 20px; margin: auto"
+            id="content"
+          ></div>
+        </div>
       </div>
-    </div>
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
   let indexValue = 0;
-  const WistiaURL = '${wistiaId}'; 
+  let searchIndex = 1;
+  const result = [];
+  let wistiaControl = "";
+  const WistiaURL = "${wistiaId}";
   const arrOfData = '${arr}';
   const WistiaHeaders = {
     Authorization: "Bearer YOUR_API_KEY",
@@ -141,19 +215,98 @@ const iframeContent = (wistiaId, objContent) => {
     },
     method: "get",
   };
- 
-  fetch('https://api.wistia.com/v1/medias/${wistiaId}/captions.json', options)
+  function downloadHTMLasPDF(elementId, type) {
+    const { jsPDF } = window.jspdf;
+    let doc = new jsPDF("l", "mm", [1500, 1400]);
+    let pdfjs = document.getElementById(elementId).cloneNode(true);
+    let divElement = document.createElement("div");
+    const arrOfElem = pdfjs
+      .querySelectorAll("p")
+      .forEach((elem) => (elem.style.color = "black"));
+    divElement.innerHTML = pdfjs.innerHTML;
+    divElement.style.width = "1000px";
+    doc.html(divElement, {
+      callback: function (doc) {
+        doc.save(type + '.pdf');
+      },
+      x: 12,
+      y: 12,
+    });
+  }
+
+  function timecodeToSeconds(timecode) {
+    const parts = timecode.split(":");
+    const hours = parseInt(parts[0], 10);
+    const minutes = parseInt(parts[1], 10);
+    const seconds = parseFloat(parts[2].replace(",", "."));
+    return hours * 3600 + minutes * 60 + seconds;
+  }
+  const filterTranscript = (value) => {
+    result.length = 0;
+    const previousResult = [];
+    let transcriptsDiv = document.getElementById("Transcript");
+    let pElementsArr = transcriptsDiv.querySelectorAll("p");
+    for (let i = 0; i < pElementsArr.length; i++) {
+      if (
+        pElementsArr[i].innerHTML
+          .toLocaleLowerCase()
+          .includes(value.toLocaleLowerCase())
+      ) {
+        result.push(pElementsArr[i]);
+      } else {
+        previousResult.push(pElementsArr[i]);
+      }
+    }
+    result.map((elem, i) => {
+      elem.style.color = "red";
+      result[0].focus();
+      result[0].scrollIntoView();
+      elem.onclick = () => {
+        const elemTime = timecodeToSeconds(elem.id.split("/")[0]);
+        wistiaControl.time(elemTime);
+      };
+      elem.onmouseover = () => {
+        elem.style.border = "1px solid white";
+      };
+      elem.onmouseout = () => {
+        elem.style.border = "none";
+      };
+    });
+    previousResult.map((elem) => (elem.style.color = "white"));
+    document.getElementById(
+      "searchNumOfNum"
+    ).innerHTML = '1 / ' + result.length;
+  };
+
+  const nextAndPrevSearch = (type) => {
+    if (type === "Next") {
+      if (searchIndex < result.length) {
+        searchIndex++;
+      } else {
+        searchIndex = 1;
+      }
+    } else {
+      if (searchIndex > 1) {
+        searchIndex--;
+      }
+    }
+    result[searchIndex - 1].focus();
+    result[searchIndex - 1].scrollIntoView();
+    document.getElementById(
+      "searchNumOfNum"
+    ).innerHTML = searchIndex +  '/' + result.length;
+  };
+  fetch("https://api.wistia.com/v1/medias/${wistiaId}/captions.json", options)
     .then((response) => response.json())
     .then((data) => {
       document.getElementById("Transcript").innerHTML = "";
       const captionBlocks = data[0].text.split("\\n\\n");
 
-   
       captionBlocks.forEach((block, index) => {
         const lines = block.split("\\n");
 
         const timestamp = lines[1];
-    
+
         const spokenLines = lines.slice(2);
         const spokenText = spokenLines.join(" ");
         const pElement = document.createElement("p");
@@ -164,7 +317,6 @@ const iframeContent = (wistiaId, objContent) => {
         pElement.style.lineHeight = "28px";
         pElement.innerHTML = spokenText;
         document.getElementById("Transcript").appendChild(pElement);
-      
       });
     })
     .catch((error) => {
@@ -172,7 +324,7 @@ const iframeContent = (wistiaId, objContent) => {
     });
   window._wq = window._wq || [];
   _wq.push({
-    id: '${wistiaId}',
+    id: "${wistiaId}",
     options: {
       plugin: {
         "captions-v1": {
@@ -189,33 +341,16 @@ const iframeContent = (wistiaId, objContent) => {
       });
 
       video.bind("play", function () {
-        document.getElementById("autoScroll").innerHTML = "on";
       });
 
       video.bind("pause", function () {
-        CCs = getCCs();
-        console.log(CCs);
-        for (let i = 0; i < CCs.length; i++) {
-          elmnt = document.getElementById(CCs[i][0] + "/" + CCs[i][1]);
-          if (elmnt.style.color == "black") {
-            elmnt.focus();
-          }
-        }
+       
       });
 
       video.bind("seek", function () {
-        CCs = getCCs();
-        for (let i = 0; i < CCs.length; i++) {
-          document.getElementById("autoScroll").innerHTML = "on";
-        }
+       
       });
-      function timecodeToSeconds(timecode) {
-        const parts = timecode.split(":");
-        const hours = parseInt(parts[0], 10);
-        const minutes = parseInt(parts[1], 10);
-        const seconds = parseFloat(parts[2].replace(",", "."));
-        return hours * 3600 + minutes * 60 + seconds;
-      }
+      
       function timeStringToSeconds(timeString) {
         const [minutes, seconds] = timeString.split(":");
         const totalSeconds = parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
@@ -223,7 +358,7 @@ const iframeContent = (wistiaId, objContent) => {
       }
       function getUrlLink(str) {
         '<embed width="100%" height="500" src="' + str + '"></embed>';
-        return <h1>str</h1>
+        return "<h1>" + str + "</h1>";
       }
       video.bind("timechange", function () {
         let element = document.getElementById("Transcript");
@@ -243,19 +378,21 @@ const iframeContent = (wistiaId, objContent) => {
           }
         }
         const arr = arrOfData.split(" --> ");
-         for(let i = 0; i < arr.length; i++){
-          const obj = (JSON.parse(arr[i]));
-          const time = timeStringToSeconds(obj.time);
-          const urlLink = obj.Link;
-          if (parseInt(video.time()) === time) {
-            document.getElementById("content").innerHTML = getUrlLink(urlLink);
-            // indexValue++;
-          }
-         }
+        const obj = JSON.parse(arr[indexValue]);
+        const time = timeStringToSeconds(obj.time);
+        const urlLink = obj.Link;
+        if (parseInt(video.time()) >= time) {
+          document.getElementById("content").innerHTML += getUrlLink(
+            urlLink,
+            obj.time
+          );
+          indexValue++;
+        }
       });
     },
   });
-</script>`;
+</script>
+`;
 };
 
 export default iframeContent;

@@ -16,7 +16,7 @@ function App() {
   const [slidesState, setSlidesState] = useState([]);
   // const [wistiaVideId, setWistiaVideoID] = useState("roc17q5zlb");
   const [input, setInput] = useState("");
-  const wistiaVideId = window.location.href.split("?")[1];
+  const wistiaVideId = window.location.href.split("?")[1] || null;
   useEffect(() => {
     // fetch(`${API_ROUTE}/logs`, {
     //   headers: {
@@ -35,9 +35,9 @@ function App() {
     get(child(dbRef, `OysterVideos`))
       .then((snapshot) => {
         if (snapshot.exists()) {
-          setLogsFile(snapshot.val())
+          setLogsFile(snapshot.val());
           console.log(snapshot.val()[wistiaVideId], 100);
-          setSlidesState(snapshot.val()[wistiaVideId])
+          setSlidesState(snapshot.val()[wistiaVideId]);
         } else {
           console.log("No data available");
         }
@@ -66,7 +66,7 @@ function App() {
     // if (logsfile[wistiaVideId.slice(1)] == undefined) {
     newLogsFile[wistiaVideId] = slidesState;
     // }
-    set(ref(database, "OysterVideos"), newLogsFile)
+    set(ref(database, "OysterVideos"), newLogsFile);
     // fetch(`${API_ROUTE}/WriteLogsFile`, {
     //   method: "post",
     //   body: JSON.stringify(newLogsFile),
@@ -199,47 +199,48 @@ function App() {
               }}
               id="content"
             >
-              {slidesState.map((item, i) => {
-                return (
-                  <div
-                    style={{
-                      width: "80%",
-                      height: "auto",
-                      background: "rgb(47, 47, 47)",
-                      color: "white",
-                      margin: "10px auto",
-                      padding: "15px",
-                      borderRadius: "10px",
-                    }}
-                  >
+              {wistiaVideId &&
+                slidesState.map((item, i) => {
+                  return (
                     <div
                       style={{
-                        fontSize: "25px",
-                        position: "relative",
-                        right: "10%",
-                        cursor: "pointer",
-                        float: "right",
-                        marginRight: "-50px",
-                        marginTop: "-10px",
+                        width: "80%",
+                        height: "auto",
+                        background: "rgb(47, 47, 47)",
+                        color: "white",
+                        margin: "10px auto",
+                        padding: "15px",
+                        borderRadius: "10px",
                       }}
-                      onClick={() => removeVideoTimeStampAndSlide(i)}
                     >
-                      <MdClose />
+                      <div
+                        style={{
+                          fontSize: "25px",
+                          position: "relative",
+                          right: "10%",
+                          cursor: "pointer",
+                          float: "right",
+                          marginRight: "-50px",
+                          marginTop: "-10px",
+                        }}
+                        onClick={() => removeVideoTimeStampAndSlide(i)}
+                      >
+                        <MdClose />
+                      </div>
+                      <h2 className="DurationAndTime">Time: {item.time}</h2>
+                      <label>Document Link</label>
+                      <input
+                        style={{ width: "60%", height: "40px" }}
+                        value={item.Link}
+                        onChange={(e) => {
+                          let newArr = [...slidesState];
+                          newArr[i].Link = e.target.value;
+                          setSlidesState(newArr);
+                        }}
+                      />
                     </div>
-                    <h2 className="DurationAndTime">Time: {item.time}</h2>
-                    <label>Document Link</label>
-                    <input
-                      style={{ width: "60%", height: "40px" }}
-                      value={item.Link}
-                      onChange={(e) => {
-                        let newArr = [...slidesState];
-                        newArr[i].Link = e.target.value;
-                        setSlidesState(newArr);
-                      }}
-                    />
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
             <div
               style={{
