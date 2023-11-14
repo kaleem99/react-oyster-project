@@ -7,7 +7,6 @@ import { MdClose } from "react-icons/md";
 // import wistia from "wistia";
 import database from "./configuration/config";
 import { ref, set, getDatabase, child, get } from "firebase/database";
-console.log(process.env.REACT_APP_API_ROUTES, 8);
 const API_ROUTE = process.env.REACT_APP_API_ROUTES;
 function App() {
   const [logsfile, setLogsFile] = useState([]);
@@ -37,7 +36,7 @@ function App() {
         if (snapshot.exists()) {
           setLogsFile(snapshot.val());
           console.log(snapshot.val()[wistiaVideId], 100);
-          setSlidesState(snapshot.val()[wistiaVideId]);
+          setSlidesState(snapshot.val()[wistiaVideId] || []);
         } else {
           console.log("No data available");
         }
@@ -199,6 +198,7 @@ function App() {
               }}
               id="content"
             >
+              {console.log(slidesState, "Slide State")}
               {wistiaVideId &&
                 slidesState.map((item, i) => {
                   return (
@@ -235,7 +235,7 @@ function App() {
                         onChange={(e) => {
                           let newArr = [...slidesState];
                           newArr[i].Link = e.target.value;
-                          setSlidesState(newArr);
+                          // setSlidesState(newArr);
                         }}
                       />
                     </div>

@@ -11,11 +11,13 @@ const iframeContent = (wistiaId, objContent) => {
   }
 
   return `<div style="width: 100%; height: 100%; background-color: #212021">
-  <div style="width: 100%; height: 20px; background-color: #2f2f2f"></div>
+  <div style="width: 100%; height: auto; background-color: #2f2f2f">
+  <h3 style="color: white; text-align: center;margin-top: 10px;">Wistia Video Heading</h3>
+  </div>
   <div
     style="
       width: 100%;
-      height: calc(100% - 20px);
+      height: auto;
       display: grid;
       grid-template-columns: 50% auto;
     "
@@ -97,9 +99,9 @@ const iframeContent = (wistiaId, objContent) => {
       >
         <div
           style="
-            width: 98%;
+            width: 96%;
             margin: auto;
-            height: 40px;
+            height: auto;
             padding-top: 5px;
             color: white;
           "
@@ -107,8 +109,7 @@ const iframeContent = (wistiaId, objContent) => {
           <h2 style="width: 30%; margin: auto; color: white; float: left">
             Transcript
           </h2>
-          <div style="float: right; width: auto; display: flex">
-            <label>search captions</label>
+          <div style="width: 100%; display: flex">
             <input
               onchange="filterTranscript(this.value)"
               style="width: 200px; height: 30px"
@@ -127,17 +128,32 @@ const iframeContent = (wistiaId, objContent) => {
               >
               <button onclick="nextAndPrevSearch('Next')">next</button>
             </div>
+            <button
+            onclick="downloadHTMLasPDF('Transcript', 'captions')"
+            style="
+              height: 30px;
+              float: right;
+              background-color: white;
+              border: none;
+              color: black;
+              border-radius: 5px;
+              margin-left: auto;
+              margin-right: 0px;
+              cursor: pointer;
+            "
+          >
+            Download captions
+          </button>
           </div>
         </div>
         <hr />
         <div
           id="Transcript"
           style="
-            width: 80%;
+            width: 96%;
             margin: auto;
             height: 200px;
             overflow: auto;
-            padding: 10px;
             background-color: #2f2f2f;
             color: white;
           "
@@ -154,22 +170,7 @@ const iframeContent = (wistiaId, objContent) => {
           "
         >
           <div style="width: 100%; height: 50px">
-            <button
-              onclick="downloadHTMLasPDF('Transcript', 'captions')"
-              style="
-                height: 40px;
-                float: left;
-                margin-top: 20px;
-                margin-left: 20px;
-                background-color: #212021;
-                border: none;
-                color: white;
-                border-radius: 5px;
-                cursor: pointer;
-              "
-            >
-              Download captions
-            </button>
+          <h1 style="float: left; margin-left: 20px">Generic heading</h1>
             <button
               onclick="downloadHTMLasPDF('content', 'notes')"
               style="
@@ -339,7 +340,7 @@ const iframeContent = (wistiaId, objContent) => {
       video.bind("playbackratechange", function (playbackRate) {
         document.getElementById("playRate").value = playbackRate;
       });
-
+      wistiaControl = video;
       video.bind("play", function () {
       });
 
@@ -356,9 +357,9 @@ const iframeContent = (wistiaId, objContent) => {
         const totalSeconds = parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
         return totalSeconds;
       }
-      function getUrlLink(str) {
+      function getUrlLink(str, time) {
         '<embed width="100%" height="500" src="' + str + '"></embed>';
-        return "<h1>" + str + "</h1>";
+        return "<h1>" + time + " - " + str + "</h1>";
       }
       video.bind("timechange", function () {
         let element = document.getElementById("Transcript");

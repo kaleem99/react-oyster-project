@@ -74,9 +74,7 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
                   }}
                 >
                   <img
-                    src={
-                      `https://fast.wistia.com/embed/medias/${wistiaId}/swatch`
-                    }
+                    src={`https://fast.wistia.com/embed/medias/${wistiaId}/swatch`}
                     style={{
                       filter: "blur(5px)",
                       height: "100%",
@@ -187,7 +185,9 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
               id="WistiaVideo"
               className="wistia_responsive_padding"
               style={{ padding: "56.25% 0 0 0", position: "relative" }}
-            >{body}</div>
+            >
+              {body}
+            </div>
           </div>
           <div
             style={{
@@ -233,7 +233,10 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
               onClick={() => {
                 const result = document.getElementById("Iframe").innerHTML;
                 navigator.clipboard.writeText(
-                  result.replace(/&lt;/gi, "<").replace(/&gt;/gi, ">")
+                  result
+                    .replace(/&lt;/gi, "<")
+                    .replace(/&gt;/gi, ">")
+                    .replace(/amp;/gi, "")
                 );
               }}
               style={{
