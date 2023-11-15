@@ -18,15 +18,14 @@ const iframeContent = (wistiaId, objContent) => {
     style="
       width: 100%;
       height: auto;
-      display: grid;
-      grid-template-columns: 50% auto;
+      display: flex;
     "
   >
-    <div style="height: 100%; width: 100%; background-color: #212021">
+    <div style="height: 100%; width: 100%; background-color: #212021; display: flex;flex-direction: column;">
       <div
         style="
           width: 90%;
-          margin-top: 20px;
+          margin-top: 2%;
           margin-left: auto;
           margin-right: auto;
         "
@@ -160,40 +159,46 @@ const iframeContent = (wistiaId, objContent) => {
         ></div>
       </div>
     </div>
-    <div style="height: 100%; width: 100%">
-        <div
-          style="
-            width: 90%;
-            height: 96%;
-            background-color: white;
-            margin: 2% auto; /* padding: 20px; */
-          "
-        >
-          <div style="width: 100%; height: 50px">
-          <h1 style="float: left; margin-left: 20px">Generic heading</h1>
-            <button
-              onclick="downloadHTMLasPDF('content', 'notes')"
-              style="
-                height: 40px;
-                float: right;
-                margin-top: 20px;
-                margin-right: 20px;
-                background-color: #212021;
-                border: none;
-                color: white;
-                border-radius: 5px;
-                cursor: pointer;
-              "
-            >
-              Download Notes
-            </button>
-          </div>
+    ${
+      arr !== ""
+        ? `
+        <div style="height: calc(90vh - 100px); width: 100%">
           <div
-            style="width: 90%; height: 80%; padding: 20px; margin: auto"
-            id="content"
-          ></div>
+            style="
+        width: 90%;
+        height: 96%;
+        background-color: white;
+        margin: 2% auto; /* padding: 20px; */
+      "
+          >
+            <div style="width: 100%; height: 50px">
+              <h1 style="float: left; margin-left: 20px">Generic heading</h1>
+              <button
+                onclick="downloadHTMLasPDF('content', 'notes')"
+                style="
+            height: 40px;
+            float: right;
+            margin-top: 20px;
+            margin-right: 20px;
+            background-color: #212021;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+              >
+                Download Notes
+              </button>
+            </div>
+            <div
+              style="width: 90%; height: 80%; padding: 20px; margin: auto"
+              id="content"
+            ></div>
+          </div>
         </div>
-      </div>
+      `
+        : ""
+    }
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -359,7 +364,7 @@ const iframeContent = (wistiaId, objContent) => {
       }
       function getUrlLink(str, time) {
         '<embed width="100%" height="500" src="' + str + '"></embed>';
-        return "<h1>" + time + " - " + str + "</h1>";
+        return "<p " + "id='" + time + "' >" + time + " - " + str + "</p>";
       }
       video.bind("timechange", function () {
         let element = document.getElementById("Transcript");
@@ -387,6 +392,16 @@ const iframeContent = (wistiaId, objContent) => {
             urlLink,
             obj.time
           );
+          console.log(358, 358);
+          let allElements = document.getElementById("content").children;
+          console.log(document.getElementById("content").children);
+
+          for (let i = 0; i < allElements.length; i++) {
+            console.log(allElements[i], 100);
+            allElements[i].onclick = () => {
+              wistiaControl.time(allElements[i].id.split(":")[1]);
+            };
+          }
           indexValue++;
         }
       });
