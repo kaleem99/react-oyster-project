@@ -146,7 +146,7 @@ function App() {
           >
             <div>
               {" "}
-              <div
+              {/* <div
                 style={{
                   width: "250px",
                   height: "80px",
@@ -170,7 +170,7 @@ function App() {
                 >
                   Go
                 </button>
-              </div>
+              </div> */}
               <div
                 style={{
                   width: "250px",
