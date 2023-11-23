@@ -6,13 +6,22 @@ function timeStringToSeconds(timeString) {
 
 const iframeContent = (wistiaId, objContent) => {
   let arr = "";
-  if (objContent) {
-    arr = objContent.map((item) => JSON.stringify(item)).join(" --> ");
+  let videoHeading = "";
+  let keyNotesHeading = "";
+  if (objContent && objContent.keyNotesSlideState) {
+    arr = objContent.keyNotesSlideState
+      .map((item) => JSON.stringify(item))
+      .join(" --> ");
   }
-
+  if (objContent && objContent.videoHeading) {
+    videoHeading = objContent.videoHeading;
+  }
+  if (objContent && objContent.keyNotesHeading) {
+    keyNotesHeading = objContent.keyNotesHeading;
+  }
   return `<div style="width: 100%; height: 100%; background-color: #212021">
   <div style="width: 100%; height: auto; background-color: #2f2f2f">
-  <h3 style="color: white; text-align: center;margin-top: 10px;">Wistia Video Heading</h3>
+  <h3 style="color: white; text-align: center;margin-top: 10px;">${videoHeading}</h3>
   </div>
   <div
     style="
@@ -172,7 +181,7 @@ const iframeContent = (wistiaId, objContent) => {
       "
           >
             <div style="width: 100%; height: 50px">
-              <h1 style="float: left; margin-left: 20px">Generic heading</h1>
+              <h1 style="float: left; margin-left: 20px">${keyNotesHeading}</h1>
               <button
                 onclick="downloadHTMLasPDF('content', 'notes')"
                 style="
@@ -364,7 +373,7 @@ const iframeContent = (wistiaId, objContent) => {
       }
       function getUrlLink(str, time) {
         '<embed width="100%" height="500" src="' + str + '"></embed>';
-        return "<p " + "id='" + time + "' >" + time + " - " + str + "</p>";
+        return "<p>" + "<a href='#' " + "id='" + time + " '>" + time + "</a>" + " - " + str + "</p>";
       }
       video.bind("timechange", function () {
         let element = document.getElementById("Transcript");
@@ -399,7 +408,7 @@ const iframeContent = (wistiaId, objContent) => {
           for (let i = 0; i < allElements.length; i++) {
             console.log(allElements[i], 100);
             allElements[i].onclick = () => {
-              wistiaControl.time(allElements[i].id.split(":")[1]);
+              wistiaControl.time(allElements[i].childNodes[0].id.split(":")[1]);
             };
           }
           indexValue++;

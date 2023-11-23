@@ -14,7 +14,9 @@ function App() {
   const [duration, setDuration] = useState("");
   const [slidesState, setSlidesState] = useState([]);
   // const [wistiaVideId, setWistiaVideoID] = useState("roc17q5zlb");
-  const [input, setInput] = useState("");
+  const [videoHeading, setVideoHeading] = useState("");
+  const [keyNotesHeading, setKeyNotesHeading] = useState("");
+
   const wistiaVideId = window.location.href.split("?")[1] || null;
   useEffect(() => {
     // fetch(`${API_ROUTE}/logs`, {
@@ -35,8 +37,9 @@ function App() {
       .then((snapshot) => {
         if (snapshot.exists()) {
           setLogsFile(snapshot.val());
-          console.log(snapshot.val()[wistiaVideId], 100);
-          setSlidesState(snapshot.val()[wistiaVideId] || []);
+          console.log(snapshot.val()[wistiaVideId]);
+          setSlidesState(snapshot.val()[wistiaVideId].keyNotesSlideState || []);
+          setVideoHeading(snapshot.val()[wistiaVideId].videoHeading);
         } else {
           console.log("No data available");
         }
@@ -48,12 +51,14 @@ function App() {
 
   const videoPlayer = useRef(null);
   const addVideoTimeStampAndSlide = () => {
-    const newArr = [...slidesState];
+    const newArr = [...slidesState.keyNotesSlideState];
     newArr.push({ time: videoTime, Link: "" });
     setSlidesState(newArr);
   };
   const removeVideoTimeStampAndSlide = (index) => {
-    const newArr = [...slidesState].filter((item, i) => i !== index);
+    const newArr = [...slidesState.keyNotesSlideState].filter(
+      (item, i) => i !== index
+    );
     // newArr.push({ time: videoTime, Link: "" });
     setSlidesState(newArr);
   };
@@ -63,7 +68,11 @@ function App() {
 
     let newLogsFile = { ...logsfile };
     // if (logsfile[wistiaVideId.slice(1)] == undefined) {
-    newLogsFile[wistiaVideId] = slidesState;
+    const objData = {};
+    objData["keyNotesHeading"] = keyNotesHeading;
+    objData["videoHeading"] = videoHeading;
+    objData["keyNotesSlideState"] = slidesState;
+    newLogsFile[wistiaVideId] = objData;
     // }
     set(ref(database, "OysterVideos"), newLogsFile);
     // fetch(`${API_ROUTE}/WriteLogsFile`, {
@@ -146,7 +155,7 @@ function App() {
           >
             <div>
               {" "}
-              {/* <div
+              <div
                 style={{
                   width: "250px",
                   height: "80px",
@@ -159,18 +168,21 @@ function App() {
                   float: "left",
                 }}
               >
-                <h2 className="DurationAndTime">Wistia Video ID: </h2>
-                <input onChange={(e) => setInput(e.target.value)} />
+                <h2 className="DurationAndTime">Video heading: </h2>
+                <input
+                  value={videoHeading}
+                  onChange={(e) => setVideoHeading(e.target.value)}
+                />
                 <button
                   onClick={() => {
                     // setWistiaVideoID(input)
-                    window.location.href += "usjbuuc8zy";
-                    console.log(window.location.href);
+                    // setVideoHeading(input);
+                    fetchPostMethod();
                   }}
                 >
-                  Go
+                  Save
                 </button>
-              </div> */}
+              </div>
               <div
                 style={{
                   width: "250px",

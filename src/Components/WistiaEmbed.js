@@ -5,6 +5,7 @@ import iframeContent from "../Helpers/IframeContent";
 import { MdFullscreen, MdContentCopy, MdFullscreenExit } from "react-icons/md";
 
 const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
+  console.log(logsFile);
   const [isExpaned, setIsExpaned] = useState(false);
   const [body, setBody] = useState("");
   console.log(wistiaId);
