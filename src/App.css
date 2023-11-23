@@ -56,3 +56,54 @@
 button{
   cursor: pointer;
 }
+
+.IframeCopied {
+  animation-name: animate;
+  animation-duration: 3s;
+  animation-iteration-count: 1;
+  -moz-animation-name: animate;
+  -moz-animation-duration: 3s;
+  -moz-animation-iteration-count: 1;
+  -o-animation-name: animate;
+  -o-animation-duration: 3s;
+  -o-animation-iteration-count: 1;  
+  -webkit-animation-name: animate;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-iteration-count: 1;
+}
+
+
+@keyframes animate {
+  from {
+    background: transparent
+  }
+  50% {
+    background: #007BFF;
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+@-webkit-keyframes animate {
+  from {
+    background: transparent;
+  }
+  50% {
+    background: #007BFF;
+  }
+  100% {
+    background: transparent;
+  }
+}
+@-o-keyframes animate {
+  from {
+    background: transparent;
+  }
+  50% {
+    background: #007BFF;
+  }
+  100% {
+    background: transparent;
+  }
+}

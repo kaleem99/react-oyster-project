@@ -217,6 +217,7 @@ const iframeContent = (wistiaId, objContent) => {
   let indexValue = 0;
   let searchIndex = 1;
   const result = [];
+  let transcriptContent = "";
   let wistiaControl = "";
   const WistiaURL = "${wistiaId}";
   const arrOfData = '${arr}';
@@ -239,6 +240,21 @@ const iframeContent = (wistiaId, objContent) => {
       .querySelectorAll("p")
       .forEach((elem) => (elem.style.color = "black"));
     divElement.innerHTML = pdfjs.innerHTML;
+    if (type === "captions") {
+      divElement.innerHTML = "";
+      let transcriptContentArr = transcriptContent.split("\\n\\n");
+      transcriptContentArr.forEach((block, index) => {
+        const lines = block.split("\\n");
+
+        const timestamp = lines[1];
+        const spokenLines = lines.slice(2);
+        const spokenText = spokenLines.join(" ");
+        const pElement = document.createElement("p");
+        divElement.innerHTML += '<b>' + lines[0] + '</b>';
+        divElement.innerHTML += '<p>' + timestamp + '</p>';
+        divElement.innerHTML += '<p>' + spokenText + '</p>';
+      });
+    }
     divElement.style.width = "1000px";
     doc.html(divElement, {
       callback: function (doc) {
@@ -315,6 +331,7 @@ const iframeContent = (wistiaId, objContent) => {
     .then((response) => response.json())
     .then((data) => {
       document.getElementById("Transcript").innerHTML = "";
+      transcriptContent = data[0].text;
       const captionBlocks = data[0].text.split("\\n\\n");
 
       captionBlocks.forEach((block, index) => {

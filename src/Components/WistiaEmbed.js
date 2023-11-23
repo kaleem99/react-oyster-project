@@ -230,15 +230,37 @@ const WistiaVideo = ({ wistiaId, logsFile, setVideoTime }) => {
             <h2 style={{ width: "80%", margin: "auto", color: "white" }}>
               Iframe
             </h2>
+            <span
+              id="elementCopied"
+              style={{
+                position: "absolute",
+                top: -25,
+                left: 10,
+                background: "white",
+                padding: 5,
+                display: "none",
+              }}
+            >
+              Text Copied
+            </span>
             <button
               onClick={() => {
-                const result = document.getElementById("Iframe").innerHTML;
+                const result = document.getElementById("Iframe");
                 navigator.clipboard.writeText(
-                  result
+                  result.innerHTML
                     .replace(/&lt;/gi, "<")
                     .replace(/&gt;/gi, ">")
                     .replace(/amp;/gi, "")
                 );
+                console.log(result.textContent);
+                // result.focus();
+                result.className = "IframeCopied";
+                let elementCopied = document.getElementById("elementCopied");
+                elementCopied.style.display = "inline";
+                setTimeout(() => {
+                  elementCopied.style.display = "none";
+                  result.className = "";
+                }, 2500);
               }}
               style={{
                 width: "100px",
