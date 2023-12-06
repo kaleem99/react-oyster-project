@@ -19,22 +19,42 @@ const iframeContent = (wistiaId, objContent) => {
   if (objContent && objContent.keyNotesHeading) {
     keyNotesHeading = objContent.keyNotesHeading;
   }
-  return `<div style="width: 100%; height: 100%; background-color: #212021">
-  <div style="width: 100%; height: auto; background-color: #2f2f2f">
-  <h3 style="color: white; text-align: center;margin-top: 10px;">${videoHeading}</h3>
+  return `<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+/>
+<style>
+  body {
+    margin: 0;
+  }
+</style>
+<div
+  style="
+    width: 100%;
+    height: 100%;
+    background-color: #e7ecef;
+    font-family: sans-serif;
+  "
+>
+  <div style="width: 100%; height: auto; padding-top: 10px">
+    <h3 style="color: white; text-align: center; margin-top: 10px">
+      ${videoHeading}
+    </h3>
   </div>
-  <div
-    style="
-      width: 100%;
-      height: auto;
-      display: flex;
-    "
-  >
-    <div style="height: 100%; width: 100%; background-color: #212021; display: flex;flex-direction: column;">
+  <div style="width: 100%; height: auto; display: flex">
+    <div
+      style="
+        height: calc(100vh - 100px);
+        width: 100%;
+        background-color: #e7ecef;
+        display: flex;
+        flex-direction: column;
+      "
+    >
       <div
         style="
-          width: 90%;
-          margin-top: 2%;
+          width: 96%;
+          margin-top: 0%;
           margin-left: auto;
           margin-right: auto;
         "
@@ -98,60 +118,104 @@ const iframeContent = (wistiaId, objContent) => {
       </div>
       <div
         style="
-          width: 90%;
-          height: 300px;
-          background-color: #2f2f2f;
-          margin: 20px auto;
+          width: 96%;
+          height: 100%;
+          background-color: white;
+          margin: 20px auto auto auto;
           padding: 5px;
         "
       >
-        <div
-          style="
-            width: 96%;
-            margin: auto;
-            height: auto;
-            padding-top: 5px;
-            color: white;
-          "
-        >
-          <h2 style="width: 30%; margin: auto; color: white; float: left">
-            Transcript
-          </h2>
+        <div style="width: 96%; margin: auto; height: auto; padding-top: 5px">
+          <h3
+            style="width: 30%; margin: auto auto 10px auto; text-align: center"
+          >
+            <!-- Transcript -->
+          </h3>
           <div style="width: 100%; display: flex">
-            <input
-              onchange="filterTranscript(this.value)"
-              style="width: 200px; height: 30px"
-            />
+            <div style="position: relative">
+              <input
+                onchange="filterTranscript(this.value)"
+                type="text"
+                id="searchInput"
+                name="searchInput"
+                placeholder="Search..."
+                style="
+                  width: 200px;
+                  height: 30px;
+                  border-radius: 12px;
+                  border: 1px solid;
+                  text-align: center;
+                "
+              />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                style="
+                  position: absolute;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  left: 10px;
+                  cursor: pointer;
+                "
+              >
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l6 6 1.41-1.41-6-6zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+            </div>
             <div style="width: auto; display: flex">
-              <button onclick="nextAndPrevSearch('Previous')">prev</button>
               <text
                 id="searchNumOfNum"
                 style="
-                  min-width: 40px;
+                  min-width: 60px;
                   max-width: auto;
                   text-align: center;
                   font-size: larger;
                 "
                 >0</text
               >
-              <button onclick="nextAndPrevSearch('Next')">next</button>
+              <button
+                style="
+                  border-radius: 5px;
+                  border: 1px solid;
+                  background: #d9d9d9;
+                "
+                onclick="nextAndPrevSearch('Previous')"
+              >
+                Previous
+              </button>
+              <button
+                style="
+                  margin-left: 10px;
+                  border-radius: 5px;
+                  border: 1px solid;
+                  background: #d9d9d9;
+                "
+                onclick="nextAndPrevSearch('Next')"
+              >
+                Next
+              </button>
             </div>
             <button
-            onclick="downloadHTMLasPDF('Transcript', 'captions')"
-            style="
-              height: 30px;
-              float: right;
-              background-color: white;
-              border: none;
-              color: black;
-              border-radius: 5px;
-              margin-left: auto;
-              margin-right: 0px;
-              cursor: pointer;
-            "
-          >
-            Download captions
-          </button>
+              onclick="downloadHTMLasPDF('Transcript', 'captions')"
+              style="
+                height: 30px;
+                float: right;
+                background: none;
+                border: none;
+                color: black;
+                border-radius: 5px;
+                margin-left: auto;
+                margin-right: 0px;
+                cursor: pointer;
+                font-size: 16px;
+              "
+            >
+              <i class="fa fa-download" style="color: #2546f0"> </i>
+              Download
+            </button>
           </div>
         </div>
         <hr />
@@ -160,10 +224,8 @@ const iframeContent = (wistiaId, objContent) => {
           style="
             width: 96%;
             margin: auto;
-            height: 200px;
-            overflow: auto;
-            background-color: #2f2f2f;
-            color: white;
+            height: 25vh;
+            overflow: scroll;
           "
         ></div>
       </div>
@@ -171,41 +233,42 @@ const iframeContent = (wistiaId, objContent) => {
     ${
       arr !== ""
         ? `
-        <div style="height: calc(90vh - 100px); width: 100%">
-          <div
+    <div style="height: calc(100vh - 100px); width: 100%">
+      <div
+        style="
+          width: 90%;
+          height: 100%;
+          background-color: white;
+          margin: 0% auto; /* padding: 20px; */
+        "
+      >
+        <div style="width: 100%; height: 50px">
+          <h1 style="float: left; margin-left: 20px">${keyNotesHeading}</h1>
+          <button
+            onclick="downloadHTMLasPDF('content', 'notes')"
             style="
-        width: 90%;
-        height: 96%;
-        background-color: white;
-        margin: 2% auto; /* padding: 20px; */
-      "
+              height: 40px;
+              float: right;
+              margin-top: 20px;
+              margin-right: 20px;
+              background: none;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              font-size: 16px;
+            "
           >
-            <div style="width: 100%; height: 50px">
-              <h1 style="float: left; margin-left: 20px">${keyNotesHeading}</h1>
-              <button
-                onclick="downloadHTMLasPDF('content', 'notes')"
-                style="
-            height: 40px;
-            float: right;
-            margin-top: 20px;
-            margin-right: 20px;
-            background-color: #212021;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-          "
-              >
-                Download Notes
-              </button>
-            </div>
-            <div
-              style="width: 90%; height: 80%; padding: 20px; margin: auto"
-              id="content"
-            ></div>
-          </div>
+            <i class="fa fa-download" style="color: #2546f0"></i>
+            Download
+          </button>
         </div>
-      `
+        <div
+          style="width: 90%; height: 80%; padding: 20px; margin: auto"
+          id="content"
+        ></div>
+      </div>
+    </div>
+    `
         : ""
     }
   </div>
@@ -245,26 +308,24 @@ const iframeContent = (wistiaId, objContent) => {
       let transcriptContentArr = transcriptContent.split("\\n\\n");
       transcriptContentArr.forEach((block, index) => {
         const lines = block.split("\\n");
-
         const timestamp = lines[1];
         const spokenLines = lines.slice(2);
         const spokenText = spokenLines.join(" ");
         const pElement = document.createElement("p");
-        divElement.innerHTML += '<b>' + lines[0] + '</b>';
-        divElement.innerHTML += '<p>' + timestamp + '</p>';
-        divElement.innerHTML += '<p>' + spokenText + '</p>';
+        divElement.innerHTML += "<b>" + lines[0] + "</b>";
+        divElement.innerHTML += "<p>" + timestamp + "</p>";
+        divElement.innerHTML += "<p>" + spokenText + "</p>";
       });
     }
     divElement.style.width = "1000px";
     doc.html(divElement, {
       callback: function (doc) {
-        doc.save(type + '.pdf');
+        doc.save(type + ".pdf");
       },
       x: 12,
       y: 12,
     });
   }
-
   function timecodeToSeconds(timecode) {
     const parts = timecode.split(":");
     const hours = parseInt(parts[0], 10);
@@ -278,18 +339,40 @@ const iframeContent = (wistiaId, objContent) => {
     let transcriptsDiv = document.getElementById("Transcript");
     let pElementsArr = transcriptsDiv.querySelectorAll("p");
     for (let i = 0; i < pElementsArr.length; i++) {
-      if (
-        pElementsArr[i].innerHTML
-          .toLocaleLowerCase()
-          .includes(value.toLocaleLowerCase())
-      ) {
-        result.push(pElementsArr[i]);
-      } else {
-        previousResult.push(pElementsArr[i]);
-      }
+      // console.log(pElementsArr[i].innerHTML);
+      let xElem = pElementsArr[i].querySelectorAll("text");
+      // xElem[0].style.color = "orange";
+      // console.log(xElem);
+      xElem.forEach((txtElem) => {
+        if (txtElem.innerHTML.toLowerCase() === value) {
+          // console.log(txtElem.innerHTML, value);
+          // txtElem.style.color = "green";
+          result.push(pElementsArr[i]);
+        } else {
+          previousResult.push(pElementsArr[i]);
+        }
+      });
+      // if (
+      //   pElementsArr[i].innerHTML
+      //     .toLocaleLowerCase()
+      //     .includes(value.toLocaleLowerCase())
+      // ) {
+      //   result.push(pElementsArr[i]);
+      // } else {
+      //   previousResult.push(pElementsArr[i]);
+      // }
     }
     result.map((elem, i) => {
-      elem.style.color = "red";
+      // elem.style.color = "red";
+      console.log(elem, "ELEMENET");
+      let newElem = elem.querySelectorAll("text");
+      newElem.forEach((txtElem) => {
+        if (txtElem.innerHTML.toLowerCase() === value) {
+          // console.log(txtElem.innerHTML, value);
+          txtElem.style.color = "red";
+          // result.push(pElementsArr[i]);
+        }
+      });
       result[0].focus();
       result[0].scrollIntoView();
       elem.onclick = () => {
@@ -298,17 +381,16 @@ const iframeContent = (wistiaId, objContent) => {
       };
       elem.onmouseover = () => {
         elem.style.border = "1px solid white";
+        elem.style.cursor = "pointer";
       };
       elem.onmouseout = () => {
         elem.style.border = "none";
       };
     });
-    previousResult.map((elem) => (elem.style.color = "white"));
-    document.getElementById(
-      "searchNumOfNum"
-    ).innerHTML = '1 / ' + result.length;
+    previousResult.map((elem) => (elem.style.color = "black"));
+    document.getElementById("searchNumOfNum").innerHTML =
+      "1 / " + result.length;
   };
-
   const nextAndPrevSearch = (type) => {
     if (type === "Next") {
       if (searchIndex < result.length) {
@@ -323,22 +405,18 @@ const iframeContent = (wistiaId, objContent) => {
     }
     result[searchIndex - 1].focus();
     result[searchIndex - 1].scrollIntoView();
-    document.getElementById(
-      "searchNumOfNum"
-    ).innerHTML = searchIndex +  '/' + result.length;
+    document.getElementById("searchNumOfNum").innerHTML =
+      searchIndex + "/" + result.length;
   };
-  fetch("https://api.wistia.com/v1/medias/${wistiaId}/captions.json", options)
+  fetch("https://api.wistia.com/v1/medias/roc17q5zlb/captions.json", options)
     .then((response) => response.json())
     .then((data) => {
       document.getElementById("Transcript").innerHTML = "";
       transcriptContent = data[0].text;
       const captionBlocks = data[0].text.split("\\n\\n");
-
       captionBlocks.forEach((block, index) => {
         const lines = block.split("\\n");
-
         const timestamp = lines[1];
-
         const spokenLines = lines.slice(2);
         const spokenText = spokenLines.join(" ");
         const pElement = document.createElement("p");
@@ -347,7 +425,18 @@ const iframeContent = (wistiaId, objContent) => {
         pElement.style.marginBlockEnd = "0px";
         pElement.style.fontFamily = "Arial, sans-serif";
         pElement.style.lineHeight = "28px";
-        pElement.innerHTML = spokenText;
+        const pElementsArr = spokenText
+          .split(" ")
+          .map(
+            (elem, i) =>
+              "<text style=margin-block-start: 0; id='" +
+              i +
+              "'>" +
+              elem +
+              "</text>"
+          );
+        pElement.innerHTML = pElementsArr.join(" ");
+
         document.getElementById("Transcript").appendChild(pElement);
       });
     })
@@ -356,33 +445,22 @@ const iframeContent = (wistiaId, objContent) => {
     });
   window._wq = window._wq || [];
   _wq.push({
-    id: "${wistiaId}",
+    id: "roc17q5zlb",
     options: {
-      plugin: {
-        "captions-v1": {
-          onByDefault: true,
-          language: "eng",
-        },
-      },
+      plugin: { "captions-v1": { onByDefault: true, language: "eng" } },
       time: "roc17q5zlb",
     },
     onReady: function (video) {
       video.playbackRate("{{playRate}}");
+      // document.getElementsByClassName("w-vulcan-v2-button").style.display =
+      //   "none";
       video.bind("playbackratechange", function (playbackRate) {
         document.getElementById("playRate").value = playbackRate;
       });
       wistiaControl = video;
-      video.bind("play", function () {
-      });
-
-      video.bind("pause", function () {
-       
-      });
-
-      video.bind("seek", function () {
-       
-      });
-      
+      video.bind("play", function () {});
+      video.bind("pause", function () {});
+      video.bind("seek", function () {});
       function timeStringToSeconds(timeString) {
         const [minutes, seconds] = timeString.split(":");
         const totalSeconds = parseInt(minutes, 10) * 60 + parseInt(seconds, 10);
@@ -390,7 +468,18 @@ const iframeContent = (wistiaId, objContent) => {
       }
       function getUrlLink(str, time) {
         '<embed width="100%" height="500" src="' + str + '"></embed>';
-        return "<p>" + "<a href='#' " + "id='" + time + " '>" + time + "</a>" + " - " + str + "</p>";
+        return (
+          "<p>" +
+          "<a href='#' " +
+          "id='" +
+          time +
+          " '>" +
+          time +
+          "</a>" +
+          " - " +
+          str +
+          "</p>"
+        );
       }
       video.bind("timechange", function () {
         let element = document.getElementById("Transcript");
@@ -402,11 +491,10 @@ const iframeContent = (wistiaId, objContent) => {
           if (video.time() >= start && video.time() <= end) {
             allElements[i].focus();
             allElements[i].style.color = "#41B8E1";
-
             allElements[i].scrollIntoView();
           } else {
             allElements[i].blur();
-            allElements[i].style.color = "white";
+            allElements[i].style.color = "black";
           }
         }
         const arr = arrOfData.split(" --> ");
@@ -421,7 +509,6 @@ const iframeContent = (wistiaId, objContent) => {
           console.log(358, 358);
           let allElements = document.getElementById("content").children;
           console.log(document.getElementById("content").children);
-
           for (let i = 0; i < allElements.length; i++) {
             console.log(allElements[i], 100);
             allElements[i].onclick = () => {
